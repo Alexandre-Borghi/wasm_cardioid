@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>Rust + WASM</title>
+	<link rel="icon" href="data:image/ico,0">
+	<style>
+		body {
+			margin: 0;
+			overflow: hidden;
+		}
+	</style>
+</head>
+
+<body>
+	<canvas id="app-canvas"></canvas>
+
+	<script type="module">
+		import init from "/pkg/wasm_cardioid.js";
+		import { AppClient } from "/pkg/wasm_cardioid.js";
+
+		init();
+
+		let canvas = document.querySelector("#app-canvas");
+		const ctx = canvas.getContext("2d");
+
+		let appClient;
+		const FPS = 60.0;
+		const FRAME_DURATION = 1000.0 / FPS;
+
+		let timeSinceLastFrame = 0.0;
+		let frameStart = Date.now();
+		let lastTime = Date.now();
+
+		async function run() {
+			await init();
+
+			appClient = new AppClient();
+			appClient.setup();
+
+			loop();
+		}
+
+		run();
+
+		function loop() {
+			window.requestAnimationFrame(loop);
+
+			let now = Date.now();
+			timeSinceLastFrame += now - lastTime;
+			lastTime = now;
+
+			if (timeSinceLastFrame >= FRAME_DURATION) {
+				if (window.innerHeight !== canvas.height || window.innerWidth !== canvas.width) {
+					canvas.width = window.innerWidth;
+					canvas.style.width = window.innerWidth;
+
+					canvas.height = window.innerHeight;
+					canvas.style.height = window.innerHeight;
+				}
+
+				let deltaTimeInSecs = (Date.now() - frameStart) / 1000.0;
+				appClient.update(deltaTimeInSecs, canvas.width, canvas.height);
+				appClient.render();
+
+				timeSinceLastFrame %= FRAME_DURATION;
+				frameStart = Date.now();
+			}
+		}
+
+	</script>
+</body>
+
+</html>
