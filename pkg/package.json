@@ -1,0 +1,15 @@
+{
+  "name": "wasm_cardioid",
+  "collaborators": [
+    "Alexandre-Borghi <borghi.alexandre.12@gmail.com>"
+  ],
+  "version": "0.1.0",
+  "files": [
+    "wasm_cardioid_bg.wasm",
+    "wasm_cardioid.js",
+    "wasm_cardioid.d.ts"
+  ],
+  "module": "wasm_cardioid.js",
+  "types": "wasm_cardioid.d.ts",
+  "sideEffects": false
+}
